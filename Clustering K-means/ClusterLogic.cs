@@ -8,51 +8,37 @@ namespace Clustering_K_means
     {
         private static List<Vector> _vectors = new List<Vector>();
         private static List<Vector> _centroids = new List<Vector>();
-        private static int _amountOfClusters;
-        private static int _maxAmountOfIterations;
-
+        public static int AmountOfClusters;
+        public static int MaxAmountOfIterations;
 
         private static readonly char[] Delimiters = { ';', ',' };
 
-        static void Main(string[] args)
+        public static double RunAlgorithm()
         {
-            ProcessUserInput();
+            //Clear previous values
+            _centroids.Clear();
+            _vectors.Clear();
+
             //Stop program if the file cannot be found
-            if (!ReadCsv()) return;
+            if (!ReadCsv()) return -1;
+
+
             PickCentroids();
+
             ComputeDistanceToCentroids();
 
-            for (int iteration = 0; iteration < _maxAmountOfIterations; iteration++)
+            for (int iteration = 0; iteration < MaxAmountOfIterations; iteration++)
             {
                 RecomputeCentroids();
                 ComputeDistanceToCentroids();
             }
 
-            Console.WriteLine("SSE: " + CalculateSumSquareErrors());
-        }
-
-        //Quick and dirty user input read
-        private static void ProcessUserInput()
-        {
-            Console.WriteLine("Please Specify the amount of clusters , the amount of iterations - in format -- clusters, iterations");
-            var userInput = Console.ReadLine();
-            
-            try
-            {
-                var splitUserInput = userInput?.Split(',');
-                _amountOfClusters = int.Parse(splitUserInput[0]);
-                _maxAmountOfIterations = int.Parse(splitUserInput[1]);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Invalid input, try again");
-                ProcessUserInput();
-            }
-
+            return CalculateSumSquareErrors();
         }
 
         private static bool ReadCsv()
         {
+            //_vectors = new List<Vector>();
             bool fileExists = File.Exists(@"WineDataFlipped.CSV");
 
             if (!fileExists)
@@ -73,7 +59,7 @@ namespace Clustering_K_means
                     var fields = line.Split(Delimiters[0]);
                     CreateVectors(fields[0]);
                 }
-                Console.WriteLine("done reading and creating vectors");
+                //Console.WriteLine("done reading and creating vectors");
             }
             return true;
         }
@@ -97,11 +83,18 @@ namespace Clustering_K_means
 
         private static void PickCentroids()
         {
-            var random = new Random();
-            for (int i = 0; i < _amountOfClusters; i++)
+            Random random = new Random();
+            for (int amountOfCentroids = 0; amountOfCentroids < AmountOfClusters; amountOfCentroids++)
             {
                 var r = random.Next(_vectors.Count);
                 var vector = _vectors[r];
+
+                //Select a new centroid, if the picked one is already in the _centroid list
+                while (_centroids.Contains(vector))
+                {
+                    r = random.Next(_vectors.Count);
+                    vector = _vectors[r];
+                }
                 _centroids.Add(vector);
             }
         }
@@ -110,7 +103,8 @@ namespace Clustering_K_means
         {
             foreach (Vector vector in _vectors)
             {
-                vector.ClusterId = FindClosestCentroid(vector);
+                FindClosestCentroid(vector);
+
                 //No valid centroid found
                 if (vector.ClusterId == -1)
                 {
@@ -121,10 +115,9 @@ namespace Clustering_K_means
         }
 
         //Use the Pythagoras function to return the nearest centroid to the given vector
-        private static int FindClosestCentroid(Vector vector)
+        private static void FindClosestCentroid(Vector vector)
         {
             double shortestDistance = -1;
-            int closestCentroidId = -1;
             //Find the shortest distance from the given vector to a centroid
             for (int centroidId = 0; centroidId < _centroids.Count; centroidId++)
             {
@@ -142,11 +135,9 @@ namespace Clustering_K_means
                 {
                     shortestDistance = distance;
                     vector.ShortestDistanceToCentroid = distance;
-                    closestCentroidId = centroidId;
+                    vector.ClusterId = centroidId;
                 }
             }
-
-            return closestCentroidId;
         }
 
         private static void RecomputeCentroids()
@@ -154,7 +145,7 @@ namespace Clustering_K_means
             List<Vector> newCentroids = new List<Vector>();
 
             //For every cluster/centroid
-            for (int clusterIndex = 0; clusterIndex < _amountOfClusters; clusterIndex++)
+            for (int clusterIndex = 0; clusterIndex < AmountOfClusters; clusterIndex++)
             {
                 newCentroids.Add(CalculateCentroidPerCluster(clusterIndex));
             }
@@ -202,6 +193,5 @@ namespace Clustering_K_means
 
             return totalSSE;
         }
-
     }
 }
