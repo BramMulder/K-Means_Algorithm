@@ -12,3 +12,9 @@ C:\Users\Bram\Documents\Visual Studio 2015\Projects\Clustering K-means\Clusterin
 C:\Users\Bram\Documents\Visual Studio 2015\Projects\Clustering K-means\Clustering K-means\bin\Debug\Clustering K-means.exe
 C:\Users\Bram\Documents\Visual Studio 2015\Projects\Clustering K-means\Clustering K-means\bin\Debug\Clustering K-means.pdb
 C:\Users\Bram\Documents\Visual Studio 2015\Projects\Clustering K-means\Clustering K-means\obj\Debug\Clustering K-means.csprojResolveAssemblyReference.cache
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\bin\Debug\Clustering K-means.exe.config
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\bin\Debug\Clustering K-means.exe
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\bin\Debug\Clustering K-means.pdb
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\obj\Debug\Clustering K-means.csprojResolveAssemblyReference.cache
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\obj\Debug\Clustering K-means.exe
+E:\Documenten\Github\K-Means_Algorithm\Clustering K-means\obj\Debug\Clustering K-means.pdb

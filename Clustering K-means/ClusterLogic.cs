@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Clustering_K_means
 {
@@ -8,6 +9,7 @@ namespace Clustering_K_means
     {
         private static List<Vector> _vectors = new List<Vector>();
         private static List<Vector> _centroids = new List<Vector>();
+        private static List<Vector> _prevCentroids = new List<Vector>();
         public static int AmountOfClusters;
         public static int MaxAmountOfIterations;
 
@@ -29,12 +31,19 @@ namespace Clustering_K_means
 
             for (int iteration = 0; iteration < MaxAmountOfIterations; iteration++)
             {
+                _prevCentroids = _centroids;
                 RecomputeCentroids();
                 ComputeDistanceToCentroids();
+                //If centroid didn't change since last iteration
+                if (CheckIfCentroidsChanged())
+                {
+                    break;
+                }
             }
 
             return CalculateSumSquareErrors();
         }
+
 
         private static bool ReadCsv()
         {
@@ -192,6 +201,13 @@ namespace Clustering_K_means
             }
 
             return totalSSE;
+        }
+
+        private static bool CheckIfCentroidsChanged()
+        {
+            var xCoordinates = _centroids.Where(x => _prevCentroids.Any(y => y.Coordinates[0] == x.Coordinates[0]));
+            var yCoordinates = _centroids.Where(x => _prevCentroids.Any(y => y.Coordinates[1] == x.Coordinates[1]));
+            return (xCoordinates.Count() == AmountOfClusters) && (yCoordinates.Count() == AmountOfClusters);
         }
     }
 }
